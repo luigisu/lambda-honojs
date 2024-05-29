@@ -1,0 +1,42 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: "SAM Template para una funci\xF3n Lambda con hono.js\n"
+Resources:
+  HonoFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: Hono-test
+      CodeUri: .
+      Handler: index.handler
+      Runtime: nodejs16.x
+      MemorySize: 128
+      Timeout: 30
+      Description: Sample function for hono.js
+      Events:
+        ProxyApi:
+          Type: Api
+          Properties:
+            Path: /
+            Method: ANY
+            RestApiId:
+              Ref: MyApiGateway
+    Metadata:
+      SamResourceId: HonoFunction
+  MyApiGateway:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: MyApiGateway
+      StageName: prod
+    Metadata:
+      SamResourceId: MyApiGateway
+Outputs:
+  HonoFunctionArn:
+    Description: "ARN de la funci\xF3n Lambda"
+    Value:
+      Fn::GetAtt:
+        - HonoFunction
+        - Arn
+  MyApiGatewayUrl:
+    Description: URL de la API Gateway
+    Value:
+      Fn::Sub: https://${MyApiGateway}.execute-api.${AWS::Region}.amazonaws.com/prod/
