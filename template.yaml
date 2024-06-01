@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Transform: AWS::Serverless-2016-10-31
-Description: "SAM Template para una funci\xF3n Lambda con hono.js\n"
+Description: "SAM Template para una función Lambda con hono.js\n"
 Resources:
   HonoFunction:
     Type: AWS::Serverless::Function
@@ -16,22 +16,42 @@ Resources:
         ProxyApi:
           Type: Api
           Properties:
-            Path: /
+            Path: /{proxy+}
             Method: ANY
             RestApiId:
               Ref: MyApiGateway
     Metadata:
-      SamResourceId: HonoFunction
+      SamResourceId: MyApiGateway
+
   MyApiGateway:
     Type: AWS::Serverless::Api
     Properties:
       Name: MyApiGateway
-      StageName: prod
-    Metadata:
-      SamResourceId: MyApiGateway
+      StageName: Prod
+      DefinitionBody:
+        swagger: '2.0'
+        info:
+          title: !Ref AWS::StackName
+        paths:
+          /{proxy+}:
+            x-amazon-apigateway-any-method:
+              responses: { }
+              x-amazon-apigateway-integration:
+                uri: !Sub 'arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${HonoFunction.Arn}/invocations'
+                passthroughBehavior: "when_no_match"
+                httpMethod: POST
+                type: "aws_proxy"
+
+  ConfigLambdaPermission:
+    Type: "AWS::Lambda::Permission"
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref HonoFunction
+      Principal: apigateway.amazonaws.com
+
 Outputs:
   HonoFunctionArn:
-    Description: "ARN de la funci\xF3n Lambda"
+    Description: "ARN de la función Lambda"
     Value:
       Fn::GetAtt:
         - HonoFunction
@@ -39,4 +59,4 @@ Outputs:
   MyApiGatewayUrl:
     Description: URL de la API Gateway
     Value:
-      Fn::Sub: https://${MyApiGateway}.execute-api.${AWS::Region}.amazonaws.com/prod/
+      Fn::Sub: https://${MyApiGateway}.execute-api.${AWS::Region}.amazonaws.com/Prod/
