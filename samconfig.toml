@@ -3,9 +3,10 @@ version = 0.1
 [default.deploy]
 [default.deploy.parameters]
 stack_name = "honojs-lambda"
-s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-1v0frvxbcthr"
 s3_prefix = "honojs-lambda"
 region = "us-east-1"
-confirm_changeset = true
+confirm_changeset = false
 capabilities = "CAPABILITY_IAM"
 image_repositories = []
+resolve_s3 = true
+disable_rollback = true
