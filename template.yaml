@@ -3,6 +3,26 @@ AWSTemplateFormatVersion: "2010-09-09"
 Transform: AWS::Serverless-2016-10-31
 Description: "SAM Template para una función Lambda con hono.js\n"
 Resources:
+  HonoCognitoUserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      UserPoolName: HonoUserPool
+      AutoVerifiedAttributes:
+        - email
+
+  MyCognitoUserPoolClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      ClientName: HonoUserPoolClient
+      UserPoolId: !Ref HonoCognitoUserPool
+      GenerateSecret: false
+
+  MyCognitoUserPoolDomain:
+    Type: AWS::Cognito::UserPoolDomain
+    Properties:
+      Domain: hono-app-domain
+      UserPoolId: !Ref HonoCognitoUserPool
+
   UsersDBTable:
     Type: 'AWS::DynamoDB::Table'
     Properties:
@@ -45,6 +65,8 @@ Resources:
             Method: ANY
             RestApiId:
               Ref: MyApiGateway
+            Auth:
+              Authorizer: CognitoAuthorizer
     Metadata:
       SamResourceId: MyApiGateway
 
@@ -53,6 +75,11 @@ Resources:
     Properties:
       Name: MyApiGateway
       StageName: Prod
+      Auth:
+        DefaultAuthorizer: CognitoAuthorizer
+        Authorizers:
+          CognitoAuthorizer:
+            UserPoolArn: !GetAtt HonoCognitoUserPool.Arn
       DefinitionBody:
         swagger: '2.0'
         info:
