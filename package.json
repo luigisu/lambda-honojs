@@ -6,13 +6,16 @@
     "sam:build": "sam build",
     "sam:deploy": "sam deploy",
     "deploy": "run-s build sam:build sam:deploy"
-
   },
   "dependencies": {
     "hono": "^4.4.2"
   },
   "devDependencies": {
-    "npm-run-all2": "^6.2.0",
-    "esbuild": "^0.21.4"
+    "@aws-sdk/client-dynamodb": "^3.588.0",
+    "@aws-sdk/lib-dynamodb": "^3.588.0",
+    "@aws-sdk/util-dynamodb": "^3.588.0",
+    "dotenv": "^16.4.5",
+    "esbuild": "^0.21.4",
+    "npm-run-all2": "^6.2.0"
   }
 }
