@@ -13,7 +13,7 @@ const app = new Hono<{ Bindings: Bindings }>()
 app.get('/user/:id?', async (c) => {
     try {
         const {id}: { id: string } = c.req.param()
-        const {Items: users} = await getDbItem(TableName, {id})
+        const {Items: users} = await getDbItem(TableName, id)
         return c.json(users)
     } catch (e) {
         throw new HTTPException(500, {message: 'Error on getting Users', cause: e})
