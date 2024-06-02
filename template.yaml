@@ -25,7 +25,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: Hono-test
-      CodeUri: .
+      CodeUri: ./src/
       Handler: dist/index.handler
       Runtime: nodejs20.x
       MemorySize: 128

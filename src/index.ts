@@ -1,14 +1,14 @@
-import {Hono} from 'hono'
-import {handle, LambdaContext, LambdaEvent} from 'hono/aws-lambda'
+import {Hono} from 'hono';
+import {handle, LambdaContext, LambdaEvent} from 'hono/aws-lambda';
 import {createUpdateDbItem, deleteItem, getDbItem} from "./dynamoDb";
-import {HTTPException} from 'hono/http-exception'
+import {HTTPException} from 'hono/http-exception';
 
 type Bindings = {
     event: LambdaEvent
     context: LambdaContext
-}
-const TableName = process.env.USER_DB
-const app = new Hono<{ Bindings: Bindings }>()
+};
+const TableName = process.env.USER_DB;
+const app = new Hono<{ Bindings: Bindings }>();
 
 app.get('/user/:id?', async (c) => {
     try {

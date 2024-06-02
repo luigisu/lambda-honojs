@@ -2,9 +2,9 @@
   "name": "hono-lambda",
   "version": "1",
   "scripts": {
-    "build": "esbuild --bundle --outfile=./dist/index.js --platform=node --target=node20 ./index.ts",
+    "build": "esbuild --bundle --outfile=.src/dist/index.js --platform=node --target=node20 ./src/index.ts",
     "sam:build": "sam build",
-    "sam:deploy": "sam deploy",
+    "sam:deploy": "sam deploy ",
     "deploy": "run-s build sam:build sam:deploy"
   },
   "dependencies": {
